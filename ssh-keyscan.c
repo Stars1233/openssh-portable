@@ -1,4 +1,4 @@
-/* $OpenBSD: ssh-keyscan.c,v 1.162 2024/09/20 02:00:46 jsg Exp $ */
+/* $OpenBSD: ssh-keyscan.c,v 1.164 2024/10/18 05:32:51 djm Exp $ */
 /*
  * Copyright 1995, 1996 by David Mazieres <dm@lcs.mit.edu>.
  *
@@ -588,7 +588,7 @@ conloop(void)
 	for (i = 0; i < maxfd; i++) {
 		if (read_wait[i].revents & (POLLHUP|POLLERR|POLLNVAL))
 			confree(i);
-		else if (read_wait[i].revents & (POLLIN|POLLHUP))
+		else if (read_wait[i].revents & (POLLIN))
 			conread(i);
 	}
 
@@ -652,18 +652,6 @@ do_host(char *host)
 			addr_increment(&addr);
 		}
 	}
-}
-
-void
-sshfatal(const char *file, const char *func, int line, int showfunc,
-    LogLevel level, const char *suffix, const char *fmt, ...)
-{
-	va_list args;
-
-	va_start(args, fmt);
-	sshlogv(file, func, line, showfunc, level, suffix, fmt, args);
-	va_end(args);
-	cleanup_exit(255);
 }
 
 static void
